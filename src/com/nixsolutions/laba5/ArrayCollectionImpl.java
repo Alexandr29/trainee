@@ -6,17 +6,20 @@ import interfaces.task5.ArrayIterator;
 import java.util.*;
 
 public class ArrayCollectionImpl implements ArrayCollection {
+    @Override public String toString() {
+        return "ArrayCollectionImpl{" + "elementData=" + Arrays
+                .toString(elementData) + '}';
+    }
+
+    public ArrayCollectionImpl() {
+    }
+
     private int size;
     transient Object[] elementData;
     protected transient int modCount = 0;
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
     private static final int DEFAULT_CAPACITY = 10;
-
-
-    public ArrayCollectionImpl() {
-    }
-
 
     @Override public int size() {
         return size;
@@ -36,12 +39,14 @@ public class ArrayCollectionImpl implements ArrayCollection {
         class Itr implements ArrayIterator {
             int cursor;       // index of next element to return
             int lastRet = -1; // index of last element returned; -1 if no such
-            //int expectedModCount = modCount;
-            public Itr() {}
 
+            //int expectedModCount = modCount;
+            public Itr() {
+            }
 
             @Override public Object[] getArray() {
-                return new Object[0];
+                return elementData;
+                //return new Object[0];
             }
 
             public boolean hasNext() {
@@ -59,11 +64,12 @@ public class ArrayCollectionImpl implements ArrayCollection {
                 return (Object) elementData[lastRet = i];
             }
         }
-return new Itr();
+        return new Itr();
     }
 
     @Override public Object[] toArray() {
-        return Arrays.copyOf(elementData, size);
+        return elementData;
+        //return Arrays.copyOf(elementData, size);
     }
 
     @Override public boolean add(Object o) {
@@ -111,6 +117,7 @@ return new Itr();
     @Override public boolean retainAll(Collection c) {
         Objects.requireNonNull(c);
         return batchRemove(c, true);
+
     }
 
     @Override public boolean removeAll(Collection c) {
@@ -130,16 +137,14 @@ return new Itr();
     }
 
     @Override public Object[] getArray() {
-        return new Object[0];
+        return elementData;
     }
 
     @Override public void setArray(Object[] objects) {
-
+        elementData = objects;
+        //langth = elementData.length;
+        size = elementData.length;
     }
-
-
-
-
 
     private boolean batchRemove(Collection<?> c, boolean complement) {
         final Object[] elementData = this.elementData;
@@ -153,9 +158,7 @@ return new Itr();
             // Preserve behavioral compatibility with AbstractCollection,
             // even if c.contains() throws.
             if (r != size) {
-                System.arraycopy(elementData, r,
-                        elementData, w,
-                        size - r);
+                System.arraycopy(elementData, r, elementData, w, size - r);
                 w += size - r;
             }
             if (w != size) {
@@ -169,18 +172,20 @@ return new Itr();
         }
         return modified;
     }
+
     private void fastRemove(int index) {
         modCount++;
         int numMoved = size - index - 1;
         if (numMoved > 0)
-            System.arraycopy(elementData, index+1, elementData, index,
+            System.arraycopy(elementData, index + 1, elementData, index,
                     numMoved);
         elementData[--size] = null; // clear to let GC do its work
     }
+
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
-                if (elementData[i]==null)
+                if (elementData[i] == null)
                     return i;
         } else {
             for (int i = 0; i < size; i++)
@@ -189,6 +194,7 @@ return new Itr();
         }
         return -1;
     }
+
     private void ensureExplicitCapacity(int minCapacity) {
         modCount++;
 
@@ -196,6 +202,7 @@ return new Itr();
         if (minCapacity - elementData.length > 0)
             grow(minCapacity);
     }
+
     private static int hugeCapacity(int minCapacity) {
         if (minCapacity < 0) // overflow
             throw new OutOfMemoryError();
@@ -203,12 +210,15 @@ return new Itr();
                 Integer.MAX_VALUE :
                 MAX_ARRAY_SIZE;
     }
-    private static int calculateCapacity(Object[] elementData, int minCapacity) {
+
+    private static int calculateCapacity(Object[] elementData,
+            int minCapacity) {
         if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
             return Math.max(DEFAULT_CAPACITY, minCapacity);
         }
         return minCapacity;
     }
+
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
@@ -220,8 +230,31 @@ return new Itr();
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
+
     private void ensureCapacityInternal(int minCapacity) {
         ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
+    }
+
+    public static void main(String[] args) {
+        ArrayCollectionImpl my = new ArrayCollectionImpl();
+
+        Integer[] a = { 1, 2, 3, 4, 5, 6 };
+
+        my.setArray(a);
+        my.getArray();
+        System.out.println(my);
+        System.out.println(my.size());
+        my.add(7);
+        System.out.println(my);
+        my.add(8);
+        System.out.println(my);
+        my.add(9);
+        System.out.println(my);
+        my.add(10);
+        System.out.println(my);
+        my.add(11);
+        System.out.println(my);
+
     }
 
 }

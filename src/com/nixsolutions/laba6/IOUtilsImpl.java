@@ -25,19 +25,8 @@ import java.util.Queue;
 
 import interfaces.task6.IOUtils;
 
-/**
- * Класс для работы с потоками
- *
- * @author zinchenko
- */
 public class IOUtilsImpl implements IOUtils {
 
-    /**
-     * Копирует Файлы.
-     *
-     * @param source источник
-     * @param dest   цель
-     */
     @Override public void copyFile(final String source, final String dest) {
 
         // if (!dest.matches(".*[.]{1}.*")) {
@@ -124,7 +113,6 @@ public class IOUtilsImpl implements IOUtils {
             try {
                 input.close();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             // }
@@ -179,7 +167,6 @@ public class IOUtilsImpl implements IOUtils {
             try {
                 input.close();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             // }

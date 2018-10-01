@@ -40,8 +40,8 @@ public class Main {
 
         // copyFile ---------------------------------------------------
 
-        String source = "C:\\Users\\zinchenko\\workspace\\ZinchenkoVitaliy\\test\\s.txt";
-        String dest = "C:\\Users\\zinchenko\\workspace\\ZinchenkoVitaliy\\test\\d.txt";
+        String source = "/home/NIX/asinkevich/java/s.txt";
+        String dest = "/home/NIX/asinkevich/java/s2.txt";
 
         t0 = System.nanoTime();
 
@@ -73,7 +73,7 @@ public class Main {
 
         // findFiles ---------------------------------------------------
 
-        String fileName = "C:\\Users\\zinchenko\\workspace\\ZinchenkoVitaliy\\myFolder";
+        String fileName = "/home/NIX/asinkevich/IdeaProjects/codeConvention/src";
 
         String[] files = iou.findFiles(fileName);
 
@@ -95,7 +95,6 @@ public class Main {
         for (String string : files2) {
             System.out.println("file:   " + string);
         }
-
         System.out.println();
     }
 }

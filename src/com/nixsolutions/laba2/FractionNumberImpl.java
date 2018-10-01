@@ -19,26 +19,31 @@ public class FractionNumberImpl implements FractionNumber {
         a = Math.abs(a);
         b = Math.abs(b);
         while (a != 0 && b != 0) {
-            if (a > b)
+            if (a > b) {
                 a = a % b;
-            else
+            } else {
                 b = b % a;
+            }
         }
         return a + b;
     }
 
     private void setDividendAndDivisor(int dividend, int divisor) {
-        if (divisor == 0)
+        if (divisor == 0) {
             throw new IllegalArgumentException("Divisor is 0");
+        }
+
         int maximalCommonDivisor = getGreatestCommonDivisor(dividend, divisor);
         int sign = Integer.signum(dividend) * Integer.signum(divisor);
         this.dividend = Math.abs(dividend) / maximalCommonDivisor;
         this.divisor = Math.abs(divisor) / maximalCommonDivisor;
-        if (sign < 0)
+        if (sign < 0) {
             this.dividend *= -1;
+        }
+
     }
 
-    @Override public void setDividend(int i) {
+    @Override public void setDividend(int dividend) {
         setDividendAndDivisor(dividend, this.divisor);
     }
 
@@ -46,8 +51,10 @@ public class FractionNumberImpl implements FractionNumber {
         return dividend;
     }
 
-    @Override public void setDivisor(int i) {
-
+    @Override public void setDivisor(int divisor) {
+        if (divisor == 0) {
+            throw new IllegalArgumentException("The value can not be zero");
+        }
         setDividendAndDivisor(this.dividend, divisor);
     }
 
@@ -61,5 +68,9 @@ public class FractionNumberImpl implements FractionNumber {
 
     @Override public String toStringValue() {
         return dividend + "/" + divisor;
+    }
+
+    @Override public String toString() {
+        return toStringValue();
     }
 }

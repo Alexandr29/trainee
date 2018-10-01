@@ -1,5 +1,9 @@
 package com.nixsolutions.laba1.task2;
 
+/**
+ * @version 1.0
+ * @autor Alexander Sinkevich
+ */
 public abstract class Shape {
     public Shape() {
     }
@@ -7,39 +11,65 @@ public abstract class Shape {
     private double x;
     private double y;
 
-    Shape(double newx, double newy) {
-        moveTo(newx, newy);
+    /**
+     * @param newX
+     * @param newY
+     */
+    public Shape(double newX, double newY) {
+        moveTo(newX, newY);
     }
 
-    abstract void draw();
+    public abstract void draw();
 
-    void moveTo(double newx, double newy) {
-        setX(newx);
-        setY(newy);
+    /**
+     * @param newX
+     * @param newY
+     */
+    public void moveTo(double newX, double newY) {
+        setX(newX);
+        setY(newY);
     }
 
-    abstract void scale(int plusSize);
+    /**
+     * @param plusSize
+     */
+    public abstract void scale(int plusSize);
 
-    double getX() {
+    /**
+     * @return x
+     */
+    public double getX() {
         return x;
     }
 
-    double getY() {
+    /**
+     * @return y
+     */
+    public double getY() {
         return y;
     }
 
-    void setX(double newx) {
-        x = newx;
+    /**
+     * @param newX
+     */
+    public void setX(double newX) {
+        x = newX;
     }
 
-    void setY(double newy) {
+    /**
+     * @param newy
+     */
+    public void setY(double newy) {
         y = newy;
     }
 
+    /**
+     * @return String
+     * message
+     */
     public String toString() {
-        String message = this.getClass().getSimpleName() + ".    xPos: " + x
-                + "   yPos: " + y;
-        return message;
+        return this.getClass().getSimpleName() + ".    xPos: " + x + "   yPos: "
+                + y;
     }
 
 }

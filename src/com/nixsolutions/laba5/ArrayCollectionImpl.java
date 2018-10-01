@@ -1,11 +1,15 @@
 package com.nixsolutions.laba5;
-
 import interfaces.task5.ArrayCollection;
 import interfaces.task5.ArrayIterator;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Objects;
 
-public class ArrayCollectionImpl implements ArrayCollection {
+
+public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
     @Override public String toString() {
         return "ArrayCollectionImpl{" + "elementData=" + Arrays
                 .toString(elementData) + '}';
@@ -14,9 +18,10 @@ public class ArrayCollectionImpl implements ArrayCollection {
     public ArrayCollectionImpl() {
     }
 
-    private int size;
-    transient Object[] elementData;
-    protected transient int modCount = 0;
+    private int size = 0;
+    private E[] elementData = (E[]) new Object[0];
+    //transient Object[] elementData;
+    private transient int modCount = 0;
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
     private static final int DEFAULT_CAPACITY = 10;
@@ -34,37 +39,8 @@ public class ArrayCollectionImpl implements ArrayCollection {
         return indexOf(o) >= 0;
     }
 
-    @Override public Iterator iterator() {
-
-        class Itr implements ArrayIterator {
-            int cursor;       // index of next element to return
-            int lastRet = -1; // index of last element returned; -1 if no such
-
-            //int expectedModCount = modCount;
-            public Itr() {
-            }
-
-            @Override public Object[] getArray() {
-                return elementData;
-                //return new Object[0];
-            }
-
-            public boolean hasNext() {
-                return cursor != size;
-            }
-
-            @Override public Object next() {
-                int i = cursor;
-                if (i >= size)
-                    throw new NoSuchElementException();
-                Object[] elementData = ArrayCollectionImpl.this.elementData;
-                if (i >= elementData.length)
-                    throw new ConcurrentModificationException();
-                cursor = i + 1;
-                return (Object) elementData[lastRet = i];
-            }
-        }
-        return new Itr();
+    @Override public Iterator<E> iterator() {
+        return new ArrayIteratorImpl();
     }
 
     @Override public Object[] toArray() {
@@ -72,10 +48,28 @@ public class ArrayCollectionImpl implements ArrayCollection {
         //return Arrays.copyOf(elementData, size);
     }
 
-    @Override public boolean add(Object o) {
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        elementData[size++] = o;
+    @Override public boolean add(final E e) {
+
+        if (size == elementData.length) {
+            increaseArray();
+            elementData[size] = e;
+            size++;
+        } else {
+            elementData[size] = e;
+            size++;
+        }
+
         return true;
+
+        //        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        //        elementData[size++] = o;
+        //        return true;
+    }
+
+    private void increaseArray() {
+        E[] newArray = (E[]) new Object[elementData.length + 1];
+        System.arraycopy(elementData, 0, newArray, 0, elementData.length);
+        elementData = newArray;
     }
 
     @Override public boolean remove(Object o) {
@@ -83,16 +77,24 @@ public class ArrayCollectionImpl implements ArrayCollection {
             for (int index = 0; index < size; index++)
                 if (elementData[index] == null) {
                     fastRemove(index);
+                    reduceCapacity(1);
                     return true;
                 }
         } else {
             for (int index = 0; index < size; index++)
                 if (o.equals(elementData[index])) {
                     fastRemove(index);
+                    reduceCapacity(1);
                     return true;
                 }
         }
         return false;
+    }
+
+    private void reduceCapacity(int i) {
+        Object[] newArray = new Object[elementData.length - i];
+        System.arraycopy(elementData, 0, newArray, 0, newArray.length);
+        elementData = (E[]) newArray;
     }
 
     @Override public boolean addAll(Collection c) {
@@ -121,6 +123,17 @@ public class ArrayCollectionImpl implements ArrayCollection {
     }
 
     @Override public boolean removeAll(Collection c) {
+        //        boolean modified = false;
+        //
+        //        for (Object object : c) {
+        //            if (remove(object)) {
+        //                modified = true;
+        //
+        //            }
+        //        }
+        //
+        //        return modified;
+
         Objects.requireNonNull(c);
         return batchRemove(c, false);
     }
@@ -140,13 +153,17 @@ public class ArrayCollectionImpl implements ArrayCollection {
         return elementData;
     }
 
-    @Override public void setArray(Object[] objects) {
+    @Override public void setArray(E[] objects) {
+        if (objects == null) {
+            throw new NullPointerException();
+        }
         elementData = objects;
         //langth = elementData.length;
         size = elementData.length;
     }
 
     private boolean batchRemove(Collection<?> c, boolean complement) {
+
         final Object[] elementData = this.elementData;
         int r = 0, w = 0;
         boolean modified = false;
@@ -167,9 +184,12 @@ public class ArrayCollectionImpl implements ArrayCollection {
                     elementData[i] = null;
                 modCount += size - w;
                 size = w;
+
                 modified = true;
             }
+            reduceCapacity(modCount);
         }
+
         return modified;
     }
 
@@ -182,7 +202,7 @@ public class ArrayCollectionImpl implements ArrayCollection {
         elementData[--size] = null; // clear to let GC do its work
     }
 
-    public int indexOf(Object o) {
+    private int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
                 if (elementData[i] == null)
@@ -196,7 +216,7 @@ public class ArrayCollectionImpl implements ArrayCollection {
     }
 
     private void ensureExplicitCapacity(int minCapacity) {
-        modCount++;
+        //modCount++;
 
         // overflow-conscious code
         if (minCapacity - elementData.length > 0)
@@ -235,26 +255,55 @@ public class ArrayCollectionImpl implements ArrayCollection {
         ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
     }
 
-    public static void main(String[] args) {
-        ArrayCollectionImpl my = new ArrayCollectionImpl();
+    private class ArrayIteratorImpl implements ArrayIterator<E> {
+        int cursor;       // index of next element to return
+        //int lastRet = -1; // index of last element returned; -1 if no such
+        private int current;
+        //private boolean nextWasCall;
 
-        Integer[] a = { 1, 2, 3, 4, 5, 6 };
+        //int expectedModCount = modCount;
+        public ArrayIteratorImpl() {
+        }
 
-        my.setArray(a);
-        my.getArray();
-        System.out.println(my);
-        System.out.println(my.size());
-        my.add(7);
-        System.out.println(my);
-        my.add(8);
-        System.out.println(my);
-        my.add(9);
-        System.out.println(my);
-        my.add(10);
-        System.out.println(my);
-        my.add(11);
-        System.out.println(my);
+        @Override public Object[] getArray() {
+            return elementData;
+            //return new Object[0];
+        }
 
+        public boolean hasNext() {
+            return cursor != size;
+        }
+        //        @Override
+        //        public void remove() {
+        //            if (!nextWasCall) {
+        //                throw new IllegalStateException();
+        //            }
+        //            if (!hasNext()) {
+        //                throw new IllegalStateException();
+        //            }
+        //            fastRemove(current);
+        //            cursor--;
+        //            nextWasCall = false;
+        //        }
+
+        @Override public E next() throws NoSuchElementException {
+            if (cursor >= size) {
+                throw new NoSuchElementException();
+            } else {
+                current = cursor++;
+                //nextWasCall = true;
+                return elementData[current];
+            }
+
+            //            int i = cursor;
+            //            if (i >= size)
+            //                throw new NoSuchElementException();
+            //            Object[] elementData = ArrayCollectionImpl.this.elementData;
+            //            if (i >= elementData.length)
+            //                throw new ConcurrentModificationException();
+            //            cursor = i + 1;
+            //            return elementData[lastRet = i];
+        }
     }
 
 }

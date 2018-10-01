@@ -4,12 +4,14 @@ import com.nixsolutions.laba1.task2.Circle;
 import com.nixsolutions.laba1.task2.Shape;
 import com.nixsolutions.laba1.task2.Triangle;
 
+/**
+ * @version 1.0
+ * @autor Alexander Sinkevich
+ */
 public class Main {
 
     public static void main(String[] args) {
-
         double randX, randY, randRadius;
-
         Shape[] shapes = new Shape[15];
 
         for (int i = 0; i < shapes.length; i++) {
@@ -30,7 +32,6 @@ public class Main {
             } else {
                 // Create new triangle with random (x, y)
                 shapes[i] = new Triangle(randX, randY);
-
                 // Print out the object's info
                 System.out.println((i + 1) + " = " + shapes[i].toString());
             }

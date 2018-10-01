@@ -21,6 +21,9 @@ public class StringUtilsImpl implements StringUtils {
     }
 
     @Override public String invert(String s) {
+        if (s == null) {
+            return "";
+        }
         StringBuilder stringBuilder = new StringBuilder(s);
         String str = String.valueOf(stringBuilder.reverse());
         return str;
@@ -59,13 +62,14 @@ public class StringUtilsImpl implements StringUtils {
         scan = new Scanner(string);
 
         if (scan.hasNextDouble()) {
-            pattern = Pattern.compile("(\\d+.?\\d+)");
+            String regexWithE = "(^[-+]?\\d*[.]?\\d+){1}(([e]{1}[-+]{1}\\d+){1}|[ \\t\\n\\x0B\\f\\r]{1}|$)";
+            pattern = Pattern.compile(regexWithE);
             matcher = pattern.matcher(string);
             if (matcher.find()) {
                 stringValeue = matcher.group(1);
             }
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Wrong argument");
         }
         if (stringValeue == null) {
             value = 0;
@@ -85,7 +89,8 @@ public class StringUtilsImpl implements StringUtils {
         System.out.println(stringUtils.invert("Hello world"));
         System.out.println(stringUtils.compareWords("abcdef", "abcasdfg"));
         try {
-            System.out.println(stringUtils.parseDouble("257.456 hello 265.4"));
+            System.out.println(
+                    stringUtils.parseDouble("-1256.30000000002  hello 265.4"));
         } catch (IllegalArgumentException ex) {
             System.out.println("Преобразование невозможно");
             ex.printStackTrace(System.err);

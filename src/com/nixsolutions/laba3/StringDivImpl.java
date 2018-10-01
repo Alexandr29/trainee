@@ -1,30 +1,36 @@
 package com.nixsolutions.laba3;
 
 import interfaces.task3.StringDiv;
+import interfaces.task3.StringUtils;
 
 public class StringDivImpl implements StringDiv {
     public StringDivImpl() {
     }
 
-    @Override public double div(String s, String s1) {
-        if (s == null || s1 == null) {
-            throw new NullPointerException("String is null");
+    @Override public double div(String s1, String s2) {
+        if (s2 == null) {
+            throw new NullPointerException();
         }
 
-        StringUtilsImpl sui = new StringUtilsImpl();
-        double a = sui.parseDouble(s);
-        double b = sui.parseDouble(s1);
-
-        if (b == 0) {
-            throw new ArithmeticException("Divide by zero");
+        if (s2 == "0") {
+            throw new ArithmeticException();
         }
 
-        return a / b;
+        StringUtils stringUtils = new StringUtilsImpl();
+
+        double d1 = stringUtils.parseDouble(s1);
+        double d2 = stringUtils.parseDouble(s2);
+
+        if (d2 == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        return d1 / d2;
     }
 
     public static void main(String[] args) {
         StringDivImpl stringDiv = new StringDivImpl();
-        double x = stringDiv.div("250.9 hello", "10 friend");
+        double x = stringDiv.div("10 hello", "-1 friend");
         System.out.println(x);
     }
 }

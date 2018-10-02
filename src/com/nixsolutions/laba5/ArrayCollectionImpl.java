@@ -1,4 +1,5 @@
 package com.nixsolutions.laba5;
+
 import interfaces.task5.ArrayCollection;
 import interfaces.task5.ArrayIterator;
 
@@ -7,7 +8,6 @@ import java.util.NoSuchElementException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
-
 
 public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
     @Override public String toString() {
@@ -19,12 +19,55 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
     }
 
     private int size = 0;
-    private E[] elementData = (E[]) new Object[0];
-    //transient Object[] elementData;
+    private E[] elementData = (E[]) new Objects[0];
     private transient int modCount = 0;
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
     private static final int DEFAULT_CAPACITY = 10;
+
+    @Override public boolean add(E e) {
+        try {
+            if (e == null) {
+                throw new NullPointerException("Null");
+            }
+            if (size == elementData.length) {
+                increaseArray();
+                elementData[size] = e;
+                size++;
+            } else {
+                elementData[size] = e;
+                size++;
+            }
+        } catch (UnsupportedOperationException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        return true;
+
+        //        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        //        elementData[size++] = o;
+        //        return true;
+    }
+
+    @Override public boolean remove(Object o) {
+        if (o == null) {
+
+            for (int index = 0; index < size; index++)
+                if (elementData[index] == null) {
+                    fastRemove(index);
+                    reduceCapacity(1);
+                    return true;
+                }
+        } else {
+            for (int index = 0; index < size; index++)
+                if (o.equals(elementData[index])) {
+                    fastRemove(index);
+                    reduceCapacity(1);
+                    return true;
+                }
+        }
+        return false;
+    }
 
     @Override public int size() {
         return size;
@@ -48,56 +91,10 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
         //return Arrays.copyOf(elementData, size);
     }
 
-    @Override public boolean add(final E e) {
-
-        if (size == elementData.length) {
-            increaseArray();
-            elementData[size] = e;
-            size++;
-        } else {
-            elementData[size] = e;
-            size++;
+    @Override public boolean addAll(Collection<? extends E> c) {
+        if (this==c) {
+            throw new IllegalArgumentException("illegal argument");
         }
-
-        return true;
-
-        //        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        //        elementData[size++] = o;
-        //        return true;
-    }
-
-    private void increaseArray() {
-        E[] newArray = (E[]) new Object[elementData.length + 1];
-        System.arraycopy(elementData, 0, newArray, 0, elementData.length);
-        elementData = newArray;
-    }
-
-    @Override public boolean remove(Object o) {
-        if (o == null) {
-            for (int index = 0; index < size; index++)
-                if (elementData[index] == null) {
-                    fastRemove(index);
-                    reduceCapacity(1);
-                    return true;
-                }
-        } else {
-            for (int index = 0; index < size; index++)
-                if (o.equals(elementData[index])) {
-                    fastRemove(index);
-                    reduceCapacity(1);
-                    return true;
-                }
-        }
-        return false;
-    }
-
-    private void reduceCapacity(int i) {
-        Object[] newArray = new Object[elementData.length - i];
-        System.arraycopy(elementData, 0, newArray, 0, newArray.length);
-        elementData = (E[]) newArray;
-    }
-
-    @Override public boolean addAll(Collection c) {
         Object[] a = c.toArray();
         int numNew = a.length;
         ensureCapacityInternal(size + numNew);  // Increments modCount
@@ -107,13 +104,17 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
     }
 
     @Override public void clear() {
-        modCount++;
 
-        // clear to let GC do its work
-        for (int i = 0; i < size; i++)
-            elementData[i] = null;
-
-        size = 0;
+        try {
+            for (int i = 0; i < size; i++) {
+                elementData[i] = null;
+                modCount++;
+            }
+            size = 0;
+            reduceCapacity(modCount);
+        } catch (UnsupportedOperationException uoe) {
+            System.out.println(uoe);
+        }
     }
 
     @Override public boolean retainAll(Collection c) {
@@ -145,11 +146,7 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
         return true;
     }
 
-    @Override public Object[] toArray(Object[] a) {
-        return a.clone();
-    }
-
-    @Override public Object[] getArray() {
+    @Override public E[] getArray() {
         return elementData;
     }
 
@@ -160,6 +157,22 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
         elementData = objects;
         //langth = elementData.length;
         size = elementData.length;
+    }
+
+    @Override public <E> E[] toArray(E[] e) {
+        return (E[]) elementData;
+    }
+
+    private void increaseArray() {
+        E[] newArray = (E[]) new Object[elementData.length + 1];
+        System.arraycopy(elementData, 0, newArray, 0, elementData.length);
+        elementData = newArray;
+    }
+
+    private void reduceCapacity(int i) {
+        Object[] newArray = new Object[elementData.length - i];
+        System.arraycopy(elementData, 0, newArray, 0, newArray.length);
+        elementData = (E[]) newArray;
     }
 
     private boolean batchRemove(Collection<?> c, boolean complement) {
@@ -306,4 +319,7 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
         }
     }
 
+    //@Override public Object[] toArray(Object[] a) {
+    //   return a.clone();
+    //}
 }

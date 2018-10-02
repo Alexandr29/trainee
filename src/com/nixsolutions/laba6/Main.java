@@ -40,15 +40,15 @@ public class Main {
 
         // copyFile ---------------------------------------------------
 
-        String source = "/home/NIX/asinkevich/java/s.txt";
-        String dest = "/home/NIX/asinkevich/java/s2.txt";
+        String source = "/home/NIX/asinkevich/java/English.pdf";
+        String dest = "/home/NIX/asinkevich/java/English2.pdf";
 
         t0 = System.nanoTime();
 
         iou.copyFile(source, dest);
 
         t1 = System.nanoTime() - t0;
-        System.out.println("for copyFile()         = " + t1 + " nano");
+         System.out.println("for copyFile()         = " + t1 + " nano");
 
         // copyFileBuffered ---------------------------------------------------
 
@@ -70,7 +70,6 @@ public class Main {
 
         t1 = System.nanoTime() - t0;
         System.out.println("for copyFileBest()     = " + t1 + " nano");
-
         // findFiles ---------------------------------------------------
 
         String fileName = "/home/NIX/asinkevich/IdeaProjects/codeConvention/src";

@@ -1,19 +1,20 @@
-package com.nixsolutions.laba7.taskA;
+package com.nixsolutions.laba7;
 
-import interfaces.task7.simple.NamePrinterThread;
+import interfaces.task7.simple.NamePrinterRunnable;
 
 import java.io.PrintStream;
 
-public class NamePrinterThreadImpl extends NamePrinterThread {
+public class NamePrinterRunnableImpl implements NamePrinterRunnable {
+
     private String printName;
     private PrintStream printStream;
     private long ms;
     private int count;
 
-    public NamePrinterThreadImpl() {
+    public NamePrinterRunnableImpl() {
     }
 
-    public NamePrinterThreadImpl(String printName, PrintStream printStream,
+    public NamePrinterRunnableImpl(String printName, PrintStream printStream,
             long ms, int count) {
         this.printName = printName;
         this.printStream = printStream;

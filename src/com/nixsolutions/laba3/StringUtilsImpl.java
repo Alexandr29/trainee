@@ -52,50 +52,27 @@ public class StringUtilsImpl implements StringUtils {
     }
 
     @Override public double parseDouble(String string) {
-        Pattern pattern;
-        Matcher matcher;
-        Scanner scan = null;
-        double value = 0.0d;
-        String stringValeue = null;
-        String s = string;
-
-        scan = new Scanner(string);
-
-        if (scan.hasNextDouble()) {
-            String regexWithE = "(^[-+]?\\d*[.]?\\d+){1}(([e]{1}[-+]{1}\\d+){1}|[ \\t\\n\\x0B\\f\\r]{1}|$)";
-            pattern = Pattern.compile(regexWithE);
-            matcher = pattern.matcher(string);
-            if (matcher.find()) {
-                stringValeue = matcher.group(1);
+        double result;
+        try {
+            String[] s1 = string.split(" ");
+            if (s1.length > 0) {
+                result = Double.parseDouble(s1[0]);
+            } else {
+                result = Double.parseDouble(string);
             }
-        } else {
-            throw new IllegalArgumentException("Wrong argument");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Illegal argument", e);
         }
-        if (stringValeue == null) {
-            value = 0;
-        } else {
-            value = Double.parseDouble(stringValeue);
-        }
-
-        return value;
+        return result;
     }
-    //        double d = Double.valueOf(s);
-    //
-    //        return d;
-    //    }
 
     public static void main(String[] args) throws IllegalArgumentException {
         StringUtilsImpl stringUtils = new StringUtilsImpl();
         System.out.println(stringUtils.invert("Hello world"));
         System.out.println(stringUtils.compareWords("abcdef", "abcasdfg"));
-        try {
-            System.out.println(
-                    stringUtils.parseDouble("-1256.30000000002  hello 265.4"));
-        } catch (IllegalArgumentException ex) {
-            System.out.println("Преобразование невозможно");
-            ex.printStackTrace(System.err);
-        }
+        System.out.println(stringUtils.parseDouble("1.23e.11  hello 265.4"));
 
     }
-
 }
+
+

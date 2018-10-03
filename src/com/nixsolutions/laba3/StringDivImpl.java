@@ -7,6 +7,9 @@ public class StringDivImpl implements StringDiv {
     public StringDivImpl() {
     }
 
+    double d1;
+    double d2;
+
     @Override public double div(String s1, String s2) {
         if (s2 == null) {
             throw new NullPointerException();
@@ -18,8 +21,8 @@ public class StringDivImpl implements StringDiv {
 
         StringUtils stringUtils = new StringUtilsImpl();
 
-        double d1 = stringUtils.parseDouble(s1);
-        double d2 = stringUtils.parseDouble(s2);
+        d1 = stringUtils.parseDouble(s1);
+        d2 = stringUtils.parseDouble(s2);
 
         if (d2 == 0) {
             throw new IllegalArgumentException();

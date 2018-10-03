@@ -1,4 +1,4 @@
-package com.nixsolutions.laba7.taskA;
+package com.nixsolutions.laba7;
 
 public class Main {
 

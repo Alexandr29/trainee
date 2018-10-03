@@ -10,10 +10,6 @@ import java.util.Iterator;
 import java.util.Objects;
 
 public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
-    @Override public String toString() {
-        return "ArrayCollectionImpl{" + "elementData=" + Arrays
-                .toString(elementData) + '}';
-    }
 
     public ArrayCollectionImpl() {
     }
@@ -27,9 +23,7 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
 
     @Override public boolean add(E e) {
         try {
-            if (e == null) {
-                throw new NullPointerException("Null");
-            }
+
             if (size == elementData.length) {
                 increaseArray();
                 elementData[size] = e;
@@ -44,9 +38,6 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
 
         return true;
 
-        //        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        //        elementData[size++] = o;
-        //        return true;
     }
 
     @Override public boolean remove(Object o) {
@@ -92,15 +83,24 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
     }
 
     @Override public boolean addAll(Collection<? extends E> c) {
-        if (this==c) {
-            throw new IllegalArgumentException("illegal argument");
+        if (this == c) {
+            throw new IllegalArgumentException();
         }
-        Object[] a = c.toArray();
-        int numNew = a.length;
-        ensureCapacityInternal(size + numNew);  // Increments modCount
-        System.arraycopy(a, 0, elementData, size, numNew);
-        size += numNew;
-        return numNew != 0;
+
+        for (E e : c) {
+            add(e);
+        }
+
+        return true;
+        //        if (this==c) {
+        //            throw new IllegalArgumentException("illegal argument");
+        //        }
+        //        Object[] a = c.toArray();
+        //        int numNew = a.length;//doubleArray.length * 2
+        //        ensureCapacityInternal(size + numNew);  // Increments modCount
+        //        System.arraycopy(a, 0, elementData, size, numNew);
+        //        size += numNew;
+        //        return numNew != 0;
     }
 
     @Override public void clear() {
@@ -113,7 +113,7 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
             size = 0;
             reduceCapacity(modCount);
         } catch (UnsupportedOperationException uoe) {
-            System.out.println(uoe);
+            uoe.getCause();
         }
     }
 
@@ -140,6 +140,9 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
     }
 
     @Override public boolean containsAll(Collection c) {
+        if (c == null) {
+            throw new NullPointerException();
+        }
         for (Object e : c)
             if (!contains(e))
                 return false;
@@ -244,14 +247,6 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
                 MAX_ARRAY_SIZE;
     }
 
-    private static int calculateCapacity(Object[] elementData,
-            int minCapacity) {
-        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
-            return Math.max(DEFAULT_CAPACITY, minCapacity);
-        }
-        return minCapacity;
-    }
-
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
@@ -262,10 +257,6 @@ public class ArrayCollectionImpl<E> implements ArrayCollection<E> {
             newCapacity = hugeCapacity(minCapacity);
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
-    }
-
-    private void ensureCapacityInternal(int minCapacity) {
-        ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
     }
 
     private class ArrayIteratorImpl implements ArrayIterator<E> {

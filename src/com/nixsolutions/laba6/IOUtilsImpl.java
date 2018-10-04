@@ -1,17 +1,9 @@
 package com.nixsolutions.laba6;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,11 +24,20 @@ public class IOUtilsImpl implements IOUtils {
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
+
+        //boolean isDirectory = Files.isDirectory(file);
+        //try {
+            //File file = new File(source);
+            //Files.createDirectory(file.toPath());
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
+
         OutputStream output;
         try {
             output = new FileOutputStream(dest);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            e.getCause();
             try {
                 input.close();
             } catch (IOException e1) {
@@ -68,14 +69,80 @@ public class IOUtilsImpl implements IOUtils {
 
     @Override public void copyFileBest(String source, String dest) {
 
-        try (FileChannel sourceChannel = new FileInputStream(source)
-                .getChannel();
-                FileChannel destChannel = new FileOutputStream(dest)
-                        .getChannel()) {
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        FileInputStream input = null;
+
+        try {
+            input = new FileInputStream(source);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        FileOutputStream output = null;
+
+        try {
+            output = new FileOutputStream(dest);
+        } catch (FileNotFoundException e) {
+            // File fileDest = new File(dest);
+            // try {
+            // fileDest.createNewFile();
+            // } catch (IOException e1) {
+            // throw new IllegalArgumentException(e1);
+            // } finally {
+            try {
+                input.close();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            // }
+            throw new IllegalArgumentException(e);
+        }
+
+        FileChannel inputChannel = input.getChannel();
+        FileChannel ouptupChannel = output.getChannel();
+
+        try {
+            inputChannel.transferTo(0, inputChannel.size(), ouptupChannel);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            input.close();
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //        if (source == null) {
+        //            throw new IllegalArgumentException();
+        //        }
+        //        FileChannel input;
+        //        try {
+        //            input = new FileInputStream(source).getChannel();
+        //        } catch (FileNotFoundException e) {
+        //            throw new IllegalArgumentException(e);
+        //        }
+        //        FileChannel output;
+        //        try{
+        //            output = new FileOutputStream(dest).getChannel();
+        //        }catch (FileNotFoundException e){
+        //            throw new IllegalArgumentException();
+        //        }
+        //
+        //        try {
+        //            output.transferFrom(input,0,input.size());
+        //        } catch (IOException e) {
+        //            throw new IllegalArgumentException(e);
+        //        }
+        //
+        //        try (FileChannel sourceChannel = new FileInputStream(source).getChannel();
+        //                FileChannel destChannel = new FileOutputStream(dest)
+        //                        .getChannel()) {
+        //            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
     }
 
     @Override public void copyFileBuffered(File source, File dest) {
@@ -170,8 +237,7 @@ public class IOUtilsImpl implements IOUtils {
         return foundFiles.toArray(new String[foundFiles.size()]);
     }
 
-    @Override public String[] findFiles(String folderName,
-            String extension) {
+    @Override public String[] findFiles(String folderName, String extension) {
 
         if (extension == null) {
             return findFiles(folderName);
@@ -213,17 +279,21 @@ public class IOUtilsImpl implements IOUtils {
         return foundFiles.toArray(new String[foundFiles.size()]);
     }
 
-    @Override public void replaceChars(Reader in, Writer out,
-            String inChars, String outChars) {
+    @Override public void replaceChars(Reader in, Writer out, String inChars,
+            String outChars) {
 
-        if (in == null || out == null) {
+        if (in == null | out == null) {
             throw new NullPointerException();
         }
 
-        if (inChars.length()!=outChars.length()){
+        if (inChars == null && outChars == null) {
+            inChars = String.valueOf('0');
+            outChars = String.valueOf('0');
+
+        }
+        if(inChars.length() != outChars.length()){
             throw new IllegalArgumentException("illegal argument");
         }
-
 
         int n = inChars.length();
         Map<Character, Character> map = new HashMap<>(n);

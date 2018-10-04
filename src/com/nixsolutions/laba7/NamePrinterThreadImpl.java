@@ -2,6 +2,7 @@ package com.nixsolutions.laba7;
 
 import interfaces.task7.simple.NamePrinterThread;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class NamePrinterThreadImpl extends NamePrinterThread {
@@ -32,11 +33,11 @@ public class NamePrinterThreadImpl extends NamePrinterThread {
         this.printName = name;
     }
 
-    @Override public void setStream(PrintStream printStream) {
-        if (printStream == null) {
+    @Override public void setStream(PrintStream stream) {
+        if (stream == null) {
             throw new NullPointerException();
         }
-        this.printStream = printStream;
+        this.printStream = stream;
     }
 
     @Override public void setInterval(long ms) {
@@ -56,7 +57,7 @@ public class NamePrinterThreadImpl extends NamePrinterThread {
 
     @Override public void run() {
         for (int i = 0; i < count; i++) {
-            System.out.println(printName);
+            printStream.print(printName);
             try {
                 Thread.sleep(ms);
             } catch (InterruptedException e) {

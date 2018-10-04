@@ -2,24 +2,28 @@ package com.nixsolutions.laba8;
 
 import interfaces.task8.CyclicItem;
 
-import java.io.Serializable;
+public class CyclicItemImpl implements CyclicItem {
 
-public class CyclicItemImpl implements CyclicItem, Serializable {
-    String string = "Hello";
-    @Override public void setValue(Object o) {
+    private Object value;
+    private transient Object temp;
+    private CyclicItem cyclicItem;
 
+    @Override public void setValue(Object value) {
+
+        this.value = value;
     }
 
     @Override public Object getValue() {
-        return null;
+        return value;
     }
 
-    @Override public void setTemp(Object o) {
+    @Override public void setTemp(Object temp) {
 
+        this.temp = temp;
     }
 
     @Override public Object getTemp() {
-        return null;
+        return temp;
     }
 
     @Override public CyclicItem nextItem() {
@@ -27,6 +31,5 @@ public class CyclicItemImpl implements CyclicItem, Serializable {
     }
 
     @Override public void setNextItem(CyclicItem cyclicItem) {
-
     }
 }

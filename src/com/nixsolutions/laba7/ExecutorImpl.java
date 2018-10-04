@@ -5,6 +5,8 @@ import interfaces.task7.executor.TasksStorage;
 
 public class ExecutorImpl implements Executor, Runnable {
 
+    private boolean stopped;
+
     public ExecutorImpl() {
     }
 
@@ -21,12 +23,16 @@ public class ExecutorImpl implements Executor, Runnable {
     }
 
     @Override public void start() {
+        if (started){
+            throw new IllegalStateException();
+        }
+
         try{
             if (getStorage()==null){
                 throw new NullPointerException();
             }
 
-            started = true;
+
             while (!Thread.interrupted()) {
                 if (getStorage().count() != 0) {
                     try {
@@ -37,7 +43,7 @@ public class ExecutorImpl implements Executor, Runnable {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                 }else {
                     stop();
@@ -46,15 +52,18 @@ public class ExecutorImpl implements Executor, Runnable {
         }catch (IllegalStateException ise){
             ise.getCause();
         }
+        started = true;
     }
 
     @Override public void stop() {
+
         if (!started) {
             throw new IllegalStateException();
         }
         //System.out.println(Thread.currentThread().getName() + " Закончился");
         Thread.currentThread().interrupt();
         started = false;
+        stopped = true;
     }
 
     @Override public void run() {

@@ -18,6 +18,13 @@ public class Main2 {
         sumTask.setCount(100);
 
         TasksStorageImpl tasksStorage = new TasksStorageImpl();
+        CopyTaskImpl copyTask = new CopyTaskImpl();
+        copyTask.incTryCount();
+        copyTask.setSource(source1);
+        copyTask.setDest(dest1);
+
+        tasksStorage.add(copyTask);
+
         tasksStorage.add(new CopyTaskImpl(source1, dest1));
         tasksStorage.add(sumTask);
         tasksStorage.add(new CopyTaskImpl(source2, dest2));

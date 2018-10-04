@@ -12,7 +12,7 @@ public class SumTaskImpl implements SumTask {
 
     private long max;
     private BigInteger result = BigInteger.valueOf(0);
-    private int tryCount = 1;
+    private int tryCount = 0;
 
     public SumTaskImpl(long max) {
         this.max = max;
@@ -36,13 +36,18 @@ public class SumTaskImpl implements SumTask {
     }
 
     @Override public BigInteger getRandom() {
-        BigInteger bigInteger = new BigInteger(
-                String.valueOf(max));// uper limit
-        Random rnd = new Random();
+        BigInteger bigInteger = new BigInteger(String.valueOf(max));
+
+        Random rnd = new Random(max);
         int maxNumBitLength = bigInteger.bitLength();
 
         BigInteger aRandomBigInt;
         aRandomBigInt = new BigInteger(maxNumBitLength, rnd);
+        System.out.println(max);
+        System.out.println(aRandomBigInt);
+        if (aRandomBigInt.intValue() < 0 || aRandomBigInt.intValue()>max){
+            return aRandomBigInt.add(BigInteger.valueOf(0));
+        }
         return aRandomBigInt;
 
     }
@@ -52,7 +57,7 @@ public class SumTaskImpl implements SumTask {
     }
 
     @Override public int getTryCount() {
-        return 0;
+        return tryCount;
     }
 
     @Override public void incTryCount() {

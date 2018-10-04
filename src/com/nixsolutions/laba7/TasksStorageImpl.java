@@ -14,13 +14,12 @@ public class TasksStorageImpl implements TasksStorage {
 
     private Stack<Task> tasks = new Stack<>();
 
-
     @Override public String toString() {
         return "TasksStorageImpl{" + "tasks=" + tasks + '}';
     }
 
     @Override public void add(Task task) {
-        if (task == null){
+        if (task == null) {
             throw new NullPointerException();
         }
 
@@ -29,24 +28,26 @@ public class TasksStorageImpl implements TasksStorage {
 
     @Override synchronized public Task get() {
 
-        if (tasks.size() != 0){
+        if (tasks.size() != 0) {
             Task task = tasks.get(0);
             try {
-                if (task.execute()) {
+                //  if (task.execute()) {
+                //   tasks.remove(0);
+                // } else {
+                //Task tmp = tasks.get(0);
+                //tasks.remove(0);
+                //tmp.incTryCount();
+                // if (tmp.getTryCount() > 5) {
+                if (tasks.size() != 0) {
                     tasks.remove(0);
-                } else {
-                    Task tmp = tasks.get(0);
-                    tasks.remove(0);
-                    tmp.incTryCount();
-                    if (tmp.getTryCount() > 5) {
-                        if (tasks.size() != 0) {
-                            tasks.remove(0);
-                        }
-                    } else {
-                        tasks.add(tmp);
-                    }
-
+                    tasks.trimToSize();
                 }
+                //  } else {
+                //tasks.add(tmp);
+
+                //  }
+
+                // }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -43,11 +43,11 @@ public class Main {
         String source = "/home/NIX/asinkevich/java/English.pdf";
         String dest = "/home/NIX/asinkevich/java/English2.pdf";
 
-        t0 = System.nanoTime();
+        //t0 = System.nanoTime();
 
-        iou.copyFile(source, dest);
+        //iou.copyFile(source, dest);
 
-        t1 = System.nanoTime() - t0;
+        //t1 = System.nanoTime() - t0;
          System.out.println("for copyFile()         = " + t1 + " nano");
 
         // copyFileBuffered ---------------------------------------------------
@@ -79,11 +79,6 @@ public class Main {
         for (String string : files) {
             System.out.println("file:   " + string);
         }
-
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
 
         // findFiles ---------------------------------------------------
 

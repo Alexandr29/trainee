@@ -16,7 +16,7 @@ public class SerializableUtilsImpl implements SerializableUtils {
 
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            oos.writeObject(fos);
+            oos.writeObject(o);
 
             //ObjectOutputStream objectOutputStream = new ObjectOutputStream(
             //        outputStream);
@@ -41,26 +41,15 @@ Object o = null;
             e.printStackTrace();
         }
 
-        //        Object o = null;
-//        try {
-//            ObjectInputStream objectInputStream = new ObjectInputStream(
-//                    inputStream);
-//            o = objectInputStream.readObject();
-//
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return o;
         return o;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-
+FileInputStream fileInputStream = new FileInputStream("test.txt");
             SerializableUtils serializableUtils = new SerializableUtilsImpl();
-
-            CyclicItemImpl cyclicItem = new CyclicItemImpl();
-            serializableUtils.serialize(((SerializableUtilsImpl) serializableUtils).fos,cyclicItem);
-            //serializableUtils.deserialize(((SerializableUtilsImpl) serializableUtils).fis);
+            TestClassMy testClassMy = new TestClassMy();
+            serializableUtils.serialize(System.out,testClassMy);
+        System.out.println(serializableUtils.deserialize(fileInputStream).toString());
     }
 
 }

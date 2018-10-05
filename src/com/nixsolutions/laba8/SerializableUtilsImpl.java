@@ -43,13 +43,4 @@ Object o = null;
 
         return o;
     }
-
-    public static void main(String[] args) throws FileNotFoundException {
-FileInputStream fileInputStream = new FileInputStream("test.txt");
-            SerializableUtils serializableUtils = new SerializableUtilsImpl();
-            TestClassMy testClassMy = new TestClassMy();
-            serializableUtils.serialize(System.out,testClassMy);
-        System.out.println(serializableUtils.deserialize(fileInputStream).toString());
-    }
-
 }

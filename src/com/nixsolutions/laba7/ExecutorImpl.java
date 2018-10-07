@@ -1,9 +1,10 @@
 package com.nixsolutions.laba7;
 
 import interfaces.task7.executor.Executor;
+import interfaces.task7.executor.Task;
 import interfaces.task7.executor.TasksStorage;
 
-public class ExecutorImpl implements Executor, Runnable {
+public class ExecutorImpl implements Executor {
 
     private boolean stopped;
 
@@ -23,36 +24,55 @@ public class ExecutorImpl implements Executor, Runnable {
     }
 
     @Override public void start() {
-        if (started){
+        if (started) {
             throw new IllegalStateException();
         }
-
-        try{
-            if (getStorage()==null){
-                throw new NullPointerException();
-            }
-
-
-            while (!Thread.interrupted()) {
-                if (getStorage().count() != 0) {
-                    try {
-                        getStorage().get();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }else {
-                    stop();
-                }
-            }
-        }catch (IllegalStateException ise){
-            ise.getCause();
+        if (getStorage() == null) {
+            throw new NullPointerException();
         }
+
+        Thread thread = new Thread(new Runnable() {
+            @Override public void run() {
+                try {
+                    while (!stopped) {
+                        Task task = tasksStorage.get();
+                        if (task != null) {
+                            task.incTryCount();
+                            try {
+                                if (!task.execute()) {
+                                    returnTask(task);
+                                }
+                                // getStorage().get();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        } else {
+                            stop();
+                        }
+                    }
+                } catch (IllegalStateException ise) {
+                    ise.getCause();
+                }
+
+            }
+        });
+        thread.start();
         started = true;
+
+    }
+
+    private void returnTask(Task task) {
+        int count = task.getTryCount();
+        if (count <= 5) {
+            tasksStorage.add(task);
+            System.out.println("put back " + Thread.currentThread().getName());
+        }
     }
 
     @Override public void stop() {
@@ -66,7 +86,7 @@ public class ExecutorImpl implements Executor, Runnable {
         stopped = true;
     }
 
-    @Override public void run() {
-        start();
-    }
+    //    @Override public void run() {
+    //        start();
+    //    }
 }

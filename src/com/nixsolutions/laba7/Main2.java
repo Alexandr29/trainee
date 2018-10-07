@@ -1,5 +1,7 @@
 package com.nixsolutions.laba7;
 
+import interfaces.task7.executor.Executor;
+
 public class Main2 {
 
     public static void main(String[] args) throws Exception {
@@ -33,9 +35,9 @@ public class Main2 {
         tasksStorage.add(sumTask3);
         tasksStorage.add(new CopyTaskImpl(source4, dest4));
 
-        ExecutorImpl executor1 = new ExecutorImpl();
-        ExecutorImpl executor2 = new ExecutorImpl();
-        ExecutorImpl executor3 = new ExecutorImpl();
+        Executor executor1 = new ExecutorImpl();
+        Executor executor2 = new ExecutorImpl();
+        Executor executor3 = new ExecutorImpl();
 
         executor1.setStorage(tasksStorage);
         executor2.setStorage(tasksStorage);
@@ -43,9 +45,9 @@ public class Main2 {
 
         //System.out.println(Thread.currentThread().getName());
 
-        Thread thread1 = new Thread(executor1);
-        Thread thread2 = new Thread(executor2);
-        Thread thread3 = new Thread(executor3);
+        Thread thread1 = (Thread) executor1;
+        Thread thread2 = (Thread) executor2;
+        Thread thread3 = (Thread) executor3;
 
         thread1.start();
         thread2.start();

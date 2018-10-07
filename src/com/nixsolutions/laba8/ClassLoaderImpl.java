@@ -3,16 +3,8 @@ package com.nixsolutions.laba8;
 import java.io.*;
 
 public class ClassLoaderImpl extends ClassLoader {
-    /**
-     * Parent ClassLoader passed to this constructor
-     * will be used if this ClassLoader can not resolve a
-     * particular class.
-     *
-     * @param parent Parent ClassLoader
-     *              (may be from getClass().getClassLoader())
-     */
-    public ClassLoaderImpl(ClassLoader parent) {
-        super(parent);
+
+    public ClassLoaderImpl() {
     }
 
     /**
@@ -91,8 +83,7 @@ public class ClassLoaderImpl extends ClassLoader {
     }
 
     public static void main(String[] args) throws Exception {
-        ClassLoaderImpl loader = new ClassLoaderImpl(
-                IntegerPrinter.class.getClassLoader());
+        ClassLoaderImpl loader = new ClassLoaderImpl();
         Class<?> clazz =
                 loader.loadClass("/home/NIX/asinkevich/java/IntegerPrinter");
         Object instance = clazz.newInstance();

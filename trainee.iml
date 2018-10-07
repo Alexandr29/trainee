@@ -23,5 +23,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="mockobjects-core" level="project" />
+    <orderEntry type="library" name="mockobjects-core1" level="project" />
   </component>
 </module>

@@ -83,11 +83,11 @@ public class ClassLoaderImpl extends ClassLoader {
     }
 
     public static void main(String[] args) throws Exception {
-        ClassLoaderImpl loader = new ClassLoaderImpl();
-        Class<?> clazz =
-                loader.loadClass("/home/NIX/asinkevich/java/IntegerPrinter");
-        Object instance = clazz.newInstance();
-        clazz.getMethod("runMe").invoke(instance);
+//        ClassLoaderImpl loader = new ClassLoaderImpl();
+//        Class<?> clazz =
+//                loader.loadClass("/home/NIX/asinkevich/java/IntegerPrinter");
+//        Object instance = clazz.newInstance();
+//        clazz.getMethod("runMe").invoke(instance);
     }
 
 }

@@ -53,7 +53,7 @@ public class ExecutorImpl implements Executor {
 
     private void returnTask(Task task) {
         int count = task.getTryCount();
-        if (count <= 5) {
+        if (count < 5) {
             tasksStorage.add(task);
             System.out.println("put back " + Thread.currentThread().getName());
         }

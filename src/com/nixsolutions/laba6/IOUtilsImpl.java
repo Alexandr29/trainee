@@ -27,8 +27,8 @@ public class IOUtilsImpl implements IOUtils {
 
         //boolean isDirectory = Files.isDirectory(file);
         //try {
-            //File file = new File(source);
-            //Files.createDirectory(file.toPath());
+        //File file = new File(source);
+        //Files.createDirectory(file.toPath());
         //} catch (IOException e) {
         //    e.printStackTrace();
         //}
@@ -82,16 +82,10 @@ public class IOUtilsImpl implements IOUtils {
         try {
             output = new FileOutputStream(dest);
         } catch (FileNotFoundException e) {
-            // File fileDest = new File(dest);
-            // try {
-            // fileDest.createNewFile();
-            // } catch (IOException e1) {
-            // throw new IllegalArgumentException(e1);
-            // } finally {
+            e.getCause();
             try {
                 input.close();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             // }
@@ -113,36 +107,6 @@ public class IOUtilsImpl implements IOUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //        if (source == null) {
-        //            throw new IllegalArgumentException();
-        //        }
-        //        FileChannel input;
-        //        try {
-        //            input = new FileInputStream(source).getChannel();
-        //        } catch (FileNotFoundException e) {
-        //            throw new IllegalArgumentException(e);
-        //        }
-        //        FileChannel output;
-        //        try{
-        //            output = new FileOutputStream(dest).getChannel();
-        //        }catch (FileNotFoundException e){
-        //            throw new IllegalArgumentException();
-        //        }
-        //
-        //        try {
-        //            output.transferFrom(input,0,input.size());
-        //        } catch (IOException e) {
-        //            throw new IllegalArgumentException(e);
-        //        }
-        //
-        //        try (FileChannel sourceChannel = new FileInputStream(source).getChannel();
-        //                FileChannel destChannel = new FileOutputStream(dest)
-        //                        .getChannel()) {
-        //            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        //        } catch (IOException e) {
-        //            e.printStackTrace();
-        //        }
     }
 
     @Override public void copyFileBuffered(File source, File dest) {
@@ -291,7 +255,7 @@ public class IOUtilsImpl implements IOUtils {
             outChars = String.valueOf('0');
 
         }
-        if(inChars.length() != outChars.length()){
+        if (inChars.length() != outChars.length()) {
             throw new IllegalArgumentException("illegal argument");
         }
 

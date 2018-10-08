@@ -4,15 +4,16 @@ import interfaces.task7.executor.Executor;
 import interfaces.task7.executor.Task;
 import interfaces.task7.executor.TasksStorage;
 
-public class ExecutorImpl implements Executor {
+import java.util.concurrent.TimeUnit;
 
-    private boolean stopped;
+public class ExecutorImpl implements Executor {
+    private boolean started = false;
+    private boolean stopped = false;
 
     public ExecutorImpl() {
     }
 
     private TasksStorage tasksStorage;
-    private boolean started;
 
     @Override public void setStorage(TasksStorage tasksStorage) {
 
@@ -24,48 +25,31 @@ public class ExecutorImpl implements Executor {
     }
 
     @Override public void start() {
-        if (started) {
-            throw new IllegalStateException();
-        }
         if (getStorage() == null) {
             throw new NullPointerException();
         }
-
-        Thread thread = new Thread(new Runnable() {
-            @Override public void run() {
+        if (started) {
+            throw new IllegalStateException();
+        }
+        started = true;
+        Thread thread = new Thread(() -> {
+            while (started) {
+                Task task = tasksStorage.get();
                 try {
-                    while (!stopped) {
-                        Task task = tasksStorage.get();
-                        if (task != null) {
-                            task.incTryCount();
-                            try {
-                                if (!task.execute()) {
-                                    returnTask(task);
-                                }
-                                // getStorage().get();
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            }
-                        } else {
-                            stop();
+                    if (task != null) {
+                        if (!task.execute()) {
+                            returnTask(task);
                         }
                     }
-                } catch (IllegalStateException ise) {
-                    ise.getCause();
+                    TimeUnit.MILLISECONDS.sleep(100);
+                } catch (Exception e) {
+                    returnTask(task);
                 }
-
             }
         });
         thread.start();
-        started = true;
-
     }
+
 
     private void returnTask(Task task) {
         int count = task.getTryCount();

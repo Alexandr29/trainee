@@ -28,7 +28,7 @@ public class SumTaskImpl implements SumTask {
     }
 
     @Override public void setMax(long max) {
-        if(max<1){
+        if (max < 1) {
             throw new IllegalArgumentException("max < 1");
         }
 
@@ -45,11 +45,10 @@ public class SumTaskImpl implements SumTask {
         aRandomBigInt = new BigInteger(maxNumBitLength, rnd);
         System.out.println(max);
         System.out.println(aRandomBigInt);
-        if (aRandomBigInt.intValue() < 0 || aRandomBigInt.intValue()>max){
+        if (aRandomBigInt.intValue() < 0 || aRandomBigInt.intValue() > max) {
             return aRandomBigInt.add(BigInteger.valueOf(0));
         }
         return aRandomBigInt;
-
     }
 
     @Override public BigInteger getResult() {
@@ -65,14 +64,12 @@ public class SumTaskImpl implements SumTask {
     }
 
     @Override synchronized public boolean execute() throws Exception {
-        //System.out.println(Thread.currentThread().getName() + " execute SumTask");
+
         try {
             for (int i = tryCount; i != 0; i--) {
 
                 result = result.add(getRandom());
-                //result = result.add(aRandomBigInt);
-
-            }//System.out.println(result);
+            }
 
         } catch (Exception e) {
             return false;

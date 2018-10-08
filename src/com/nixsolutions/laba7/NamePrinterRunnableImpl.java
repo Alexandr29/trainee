@@ -41,11 +41,11 @@ public class NamePrinterRunnableImpl implements NamePrinterRunnable {
     }
 
     @Override public void setInterval(long ms) {
-        this.ms = ms;
         //java.lang.IllegalArgumentException - если ms <= 0;
         if (ms <= 0) {
             throw new IllegalArgumentException("ms<=0");
         }
+        this.ms = ms;
     }
 
     @Override public void setCount(int count) {
@@ -57,7 +57,7 @@ public class NamePrinterRunnableImpl implements NamePrinterRunnable {
 
     @Override public void run() {
         for (int i = 0; i < count; i++) {
-            System.out.println(printName);
+            printStream.println(printName);
             try {
                 Thread.sleep(ms);
             } catch (InterruptedException e) {

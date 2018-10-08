@@ -41,11 +41,11 @@ public class NamePrinterThreadImpl extends NamePrinterThread {
     }
 
     @Override public void setInterval(long ms) {
-        this.ms = ms;
         //java.lang.IllegalArgumentException - если ms <= 0;
         if (ms <= 0) {
             throw new IllegalArgumentException("ms<=0");
         }
+        this.ms = ms;
     }
 
     @Override public void setCount(int count) {

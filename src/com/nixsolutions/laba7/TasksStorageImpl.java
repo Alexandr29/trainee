@@ -3,16 +3,15 @@ package com.nixsolutions.laba7;
 import interfaces.task7.executor.Task;
 import interfaces.task7.executor.TasksStorage;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class TasksStorageImpl implements TasksStorage {
     public TasksStorageImpl() {
+        tasks = new LinkedList<>();
     }
 
-    private Stack<Task> tasks = new Stack<>();
+    private Queue<Task> tasks;
 
     @Override public String toString() {
         return "TasksStorageImpl{" + "tasks=" + tasks + '}';
@@ -21,48 +20,23 @@ public class TasksStorageImpl implements TasksStorage {
     @Override public void add(Task task) {
         if (task == null) {
             throw new NullPointerException();
+        }synchronized (tasks){
+            tasks.offer(task);
         }
 
-        tasks.add(task);
     }
 
     @Override synchronized public Task get() {
-
-        if (tasks.size() != 0) {
-            Task task = tasks.get(0);
-            try {
-                //  if (task.execute()) {
-                //   tasks.remove(0);
-                // } else {
-                //Task tmp = tasks.get(0);
-                //tasks.remove(0);
-                //tmp.incTryCount();
-                // if (tmp.getTryCount() > 5) {
-                if (tasks.size() != 0) {
-                    tasks.remove(0);
-                    tasks.trimToSize();
-                }
-                //  } else {
-                //tasks.add(tmp);
-
-                //  }
-
-                // }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return task;
+        synchronized (tasks){
+            return tasks.poll();
         }
-
-        //        Task task = tasks.get(0);
-        //        tasks.remove(0);
-        //        System.out.println("получил таск:   " + task);
-        //        return task;
-        return null;
     }
 
     @Override public int count() {
-        return tasks.size();
+        synchronized (tasks) {
+            return tasks.size();
+        }
+
     }
 
 }

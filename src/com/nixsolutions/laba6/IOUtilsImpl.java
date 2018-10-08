@@ -1,14 +1,23 @@
 package com.nixsolutions.laba6;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.io.OutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.List;
 import java.util.Queue;
 
 import interfaces.task6.IOUtils;
@@ -69,7 +78,7 @@ public class IOUtilsImpl implements IOUtils {
 
     @Override public void copyFileBest(String source, String dest) {
 
-        FileInputStream input = null;
+        FileInputStream input;
 
         try {
             input = new FileInputStream(source);
@@ -77,7 +86,7 @@ public class IOUtilsImpl implements IOUtils {
             throw new IllegalArgumentException(e);
         }
 
-        FileOutputStream output = null;
+        FileOutputStream output;
 
         try {
             output = new FileOutputStream(dest);
@@ -86,7 +95,7 @@ public class IOUtilsImpl implements IOUtils {
             try {
                 input.close();
             } catch (IOException e1) {
-                e1.printStackTrace();
+                e1.getCause();
             }
             // }
             throw new IllegalArgumentException(e);
@@ -98,55 +107,37 @@ public class IOUtilsImpl implements IOUtils {
         try {
             inputChannel.transferTo(0, inputChannel.size(), ouptupChannel);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.getCause();
         }
 
         try {
             input.close();
             output.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.getCause();
         }
     }
 
     @Override public void copyFileBuffered(File source, File dest) {
-
-        //String destName = dest.getAbsolutePath();
-
-        // if (!destName.matches(".*[.]{1}.*")) {
-        // throw new IllegalArgumentException();
-        // }
-
         InputStream input;
-
         try {
             input = new BufferedInputStream(new FileInputStream(source));
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-
         OutputStream output;
-
         try {
             output = new BufferedOutputStream(new FileOutputStream(dest));
         } catch (FileNotFoundException e) {
-
-            // try {
-            // dest.createNewFile();
-            // } catch (IOException e1) {
-            // throw new IllegalArgumentException(e1);
-            // } finally {
+            e.getCause();
             try {
                 input.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            // }
             throw new IllegalArgumentException(e);
         }
-
         int b;
-
         try {
             while ((b = input.read()) != -1) {
                 output.write(b);
@@ -165,7 +156,6 @@ public class IOUtilsImpl implements IOUtils {
                 e.printStackTrace();
             }
         }
-
     }
 
     @Override public String[] findFiles(String folderName) {
@@ -197,7 +187,6 @@ public class IOUtilsImpl implements IOUtils {
                 }
             }
         }
-
         return foundFiles.toArray(new String[foundFiles.size()]);
     }
 
@@ -228,13 +217,13 @@ public class IOUtilsImpl implements IOUtils {
                         folders.add(f);
                     } else if (f.isFile()) {
                         String name = f.getName();
-                        String regex = ".*(" + extension + "){1}$";
+                        String regex = ".*(" + extension + ")$";
                         boolean res = name.matches(regex);
                         if (res) {
                             foundFiles.add(f.getAbsolutePath());
                         }
                     } else {
-                        throw new RuntimeException("It isn't file or folder");
+                        throw new RuntimeException("wrong parameter");
                     }
                 }
             }
@@ -255,7 +244,7 @@ public class IOUtilsImpl implements IOUtils {
             outChars = String.valueOf('0');
 
         }
-        if (inChars.length() != outChars.length()) {
+        if (Objects.requireNonNull(inChars).length() != outChars.length()) {
             throw new IllegalArgumentException("illegal argument");
         }
 

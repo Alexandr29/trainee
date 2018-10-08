@@ -60,116 +60,54 @@ public class CopyTaskImpl implements CopyTask {
 
     @Override synchronized public boolean execute() throws Exception {
 
-        InputStream input;
+        while (getTryCount()<5){
+            InputStream input;
 
-        try {
-            input = new BufferedInputStream(new FileInputStream(source));
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        OutputStream output;
-
-        try {
-            output = new BufferedOutputStream(new FileOutputStream(dest));
-        } catch (FileNotFoundException e) {
-
-            // try {
-            // dest.createNewFile();
-            // } catch (IOException e1) {
-            // throw new IllegalArgumentException(e1);
-            // } finally {
             try {
-                input.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+                input = new BufferedInputStream(new FileInputStream(source));
+            } catch (FileNotFoundException e) {
+                throw new IllegalArgumentException(e);
             }
-            // }
-            throw new IllegalArgumentException(e);
-        }
 
-        int b;
+            OutputStream output;
 
-        try {
-            while ((b = input.read()) != -1) {
-                output.write(b);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
             try {
-                input.close();
+                output = new BufferedOutputStream(new FileOutputStream(dest));
+            } catch (FileNotFoundException e) {
+                e.getCause();
+                try {
+                    input.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                // }
+                throw new IllegalArgumentException(e);
+            }
+
+            int bytes;
+
+            try {
+                while ((bytes = input.read()) != -1) {
+                    output.write(bytes);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            try {
-                output.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } finally {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            incTryCount();
+                incTryCount();
+            }
 
         }return true;
-
-        //        if (source == null) {
-        //            throw new IllegalArgumentException();
-        //        }
-        //        FileChannel input;
-        //        try {
-        //            input = new FileInputStream(source).getChannel();
-        //        } catch (FileNotFoundException e) {
-        //            throw new IllegalArgumentException(e);
-        //        }
-        //        FileChannel output;
-        //        try{
-        //            output = new FileOutputStream(dest).getChannel();
-        //        }catch (FileNotFoundException e){
-        //            throw new IllegalArgumentException();
-        //        }
-        //
-        //        try {
-        //            output.transferFrom(input,0,input.size());
-        //        } catch (IOException e) {
-        //            throw new IllegalArgumentException(e);
-        //        }
-        //
-        //        try (FileChannel sourceChannel = new FileInputStream(source).getChannel();
-        //                FileChannel destChannel = new FileOutputStream(dest)
-        //                        .getChannel()) {
-        //            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        //        } catch (IOException e) {
-        //            e.printStackTrace();
-        //        }
     }
 
-
-
-
-        //System.out.println(Thread.currentThread().getName() + " execute CopyTask" +" source: " +  source+" " + dest);
-        //System.out.println("выполняю");
-//        try{
-//            for (int i = 0; i < getTryCount(); i++) {
-//
-//                try (FileChannel sourceChannel = new FileInputStream(source)
-//                        .getChannel();
-//                        FileChannel destChannel = new FileOutputStream(dest)
-//                                .getChannel()) {
-//                    destChannel
-//                            .transferFrom(sourceChannel, 0, sourceChannel.size());
-//                    //tmp = false;
-//                    //System.out.println(getTryCount() + "-ая попытка");
-//                    break;
-//                } catch (Exception e) {
-//                    //incTryCount();
-//                    e.getCause();
-//                    return false;
-//
-//                }
-//            }
-//        }catch (Exception e){
-//            throw new Exception(e.getCause());
-//        }
-//        return true;
-//    }
 }

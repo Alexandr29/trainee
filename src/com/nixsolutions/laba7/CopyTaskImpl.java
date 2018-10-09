@@ -3,7 +3,6 @@ package com.nixsolutions.laba7;
 import interfaces.task7.executor.CopyTask;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
 
 public class CopyTaskImpl implements CopyTask {
 

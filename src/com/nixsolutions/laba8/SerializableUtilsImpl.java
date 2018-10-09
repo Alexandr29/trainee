@@ -3,44 +3,38 @@ package com.nixsolutions.laba8;
 import interfaces.task8.SerializableUtils;
 
 import java.io.*;
+import java.util.Objects;
 
-public class SerializableUtilsImpl implements SerializableUtils {
-    FileOutputStream fos = new FileOutputStream("test.txt");
-    FileInputStream fis = null;
+public class SerializableUtilsImpl implements SerializableUtils, Serializable {
+    //FileOutputStream fos = new FileOutputStream("test.txt");
+    //FileInputStream fis = null;
 
     public SerializableUtilsImpl() throws FileNotFoundException {
     }
 
     @Override public void serialize(OutputStream outputStream, Object o) {
-        try {
+        Objects.requireNonNull(outputStream);
+        Objects.requireNonNull(o);
 
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-            oos.writeObject(o);
-
-            //ObjectOutputStream objectOutputStream = new ObjectOutputStream(
-            //        outputStream);
-            //objectOutputStream.writeObject(o);
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                outputStream)) {
+            objectOutputStream.writeObject(o);
+            objectOutputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Serialization Exception",
+                    e);
         }
+
     }
 
     @Override public Object deserialize(InputStream inputStream) {
-Object o = null;
-        try {
-            fis = new FileInputStream("test.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        Objects.requireNonNull(inputStream);
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(
+                inputStream)) {
+            return objectInputStream.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            throw new RuntimeException("Deserialization Exception",
+                    e);
         }
-        ObjectInputStream oin = null;
-        try {
-            oin = new ObjectInputStream(fis);
-            o = oin.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return o;
     }
 }

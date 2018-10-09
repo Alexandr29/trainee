@@ -5,33 +5,33 @@ import interfaces.task8.CyclicItem;
 import java.io.Serializable;
 
 public class CyclicItemImpl implements CyclicItem, Serializable {
-//    @Override public boolean equals(Object o) {
-//        if (this == o)
-//            return true;
-//        if (o == null || getClass() != o.getClass())
-//            return false;
-//        CyclicItemImpl that = (CyclicItemImpl) o;
-//        return Objects.equals(value, that.value) && Objects
-//                .equals(temp, that.temp);
-//    }
-//
-//    @Override public int hashCode() {
-//        return Objects.hash(value, temp);
-//    }
+    //    @Override public boolean equals(Object o) {
+    //        if (this == o)
+    //            return true;
+    //        if (o == null || getClass() != o.getClass())
+    //            return false;
+    //        CyclicItemImpl that = (CyclicItemImpl) o;
+    //        return Objects.equals(value, that.value) && Objects
+    //                .equals(temp, that.temp);
+    //    }
+    //
+    //    @Override public int hashCode() {
+    //        return Objects.hash(value, temp);
+    //    }
 
     private Object value;
     private transient Object temp;
     private CyclicItem nextItem;
 
     public CyclicItemImpl() {
-        nextItem =this;
+        nextItem = this;
     }
 
     public CyclicItemImpl(Object value, Object temp) {
         super();
         this.temp = temp;
         this.value = value;
-        nextItem =this;
+        nextItem = this;
     }
 
     @Override public void setValue(Object value) {

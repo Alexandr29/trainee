@@ -2,7 +2,6 @@ package com.nixsolutions.laba8;
 
 import interfaces.task8.CyclicCollection;
 import interfaces.task8.CyclicItem;
-import interfaces.task8.SerializableUtils;
 
 import java.io.*;
 
@@ -35,8 +34,7 @@ public class CyclicCollectionImpl implements CyclicCollection, Serializable {
         return true;
     }
 
-    @Override public void insertAfter(CyclicItem oldItem,
-            CyclicItem newItem) {
+    @Override public void insertAfter(CyclicItem oldItem, CyclicItem newItem) {
 
         if (oldItem == null || newItem == null) {
             throw new NullPointerException();
@@ -121,6 +119,7 @@ public class CyclicCollectionImpl implements CyclicCollection, Serializable {
     @Override public int size() {
         return size;
     }
+
     private boolean isContain(final CyclicItem item) {
         int n = size;
         CyclicItem currentItem = fstItem;
@@ -138,28 +137,4 @@ public class CyclicCollectionImpl implements CyclicCollection, Serializable {
     @Override public String toString() {
         return "CyclicCollectionImpl{" + "lastItem=" + lastItem + '}';
     }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        //BufferedInputStream fis = new BufferedInputStream(new FileInputStream("test.txt"));
-        BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream("test.txt"));
-        CyclicItemImpl cyclicItem1 = new CyclicItemImpl(1,1);
-        CyclicItemImpl cyclicItem2 = new CyclicItemImpl(2,2);
-        CyclicItemImpl cyclicItem3 = new CyclicItemImpl(3,3);
-
-        CyclicCollectionImpl cyclicCollection = new CyclicCollectionImpl();
-        cyclicCollection.add(cyclicItem1);
-        cyclicCollection.add(cyclicItem2);
-        cyclicCollection.add(cyclicItem3);
-        SerializableUtils serializableUtils = new SerializableUtilsImpl();
-        FileInputStream fis = new FileInputStream("test.txt");
-        serializableUtils.serialize(fos,cyclicCollection);
-        System.out.println(serializableUtils.deserialize(fis));
-
-            Object object1 = serializableUtils.deserialize(fis);
-            Object object2 = serializableUtils.deserialize(fis);
-            System.out.println(object1.equals(object2));
-
-        //System.out.println(serializableUtils.equals(serializableUtils.deserialize(fis)));
-    }
-
 }

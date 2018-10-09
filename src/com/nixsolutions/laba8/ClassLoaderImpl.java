@@ -1,93 +1,48 @@
 package com.nixsolutions.laba8;
 
-import java.io.*;
+import interfaces.task8.PathClassLoader;
 
-public class ClassLoaderImpl extends ClassLoader {
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+import java.io.DataInputStream;
+
+public class ClassLoaderImpl extends ClassLoader implements PathClassLoader {
+    private String path;
 
     public ClassLoaderImpl() {
     }
 
-    /**
-     * Loads a given class from .class file just like
-     * the default ClassLoader. This method could be
-     * changed to load the class over network from some
-     * other server or from the database.
-     *
-     * @param name Full class name
-     */
-    private Class<?> getClass(String name)
-            throws ClassNotFoundException {
-        // We are getting a name that looks like
-        // javablogging.package.ClassToLoad
-        // and we have to convert it into the .class file name
-        // like javablogging/package/ClassToLoad.class
-        String file = name.replace('.', File.separatorChar)
-                + ".class";
-        byte[] b = null;
-        try {
-            // This loads the byte code data from the file
-            b = loadClassData(file);
-            // defineClass is inherited from the ClassLoader class
-            // and converts the byte array into a Class
-            Class<?> c = defineClass(name, b, 0, b.length);
-            resolveClass(c);
-            return c;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override public String getPath() {
+        return path == null ? "" : path;
     }
 
-    /**
-     * Every request for a class passes through this method.
-     * If the requested class is in "javablogging" package,
-     * it will load it using the
-     * {@link ClassLoaderImpl#getClass()} method.
-     * If not, it will use the super.loadClass() method
-     * which in turn will pass the request to the parent.
-     *
-     * @param name
-     *            Full class name
-     */
-    @Override
-    public Class<?> loadClass(String name)
+    @Override public void setPath(String dir) {
+        Objects.requireNonNull(dir);
+        path = dir;
+    }
+
+    @Override public Class<?> loadClass(String name)
             throws ClassNotFoundException {
-        System.out.println("loading class '" + name + "'");
-        if (name.startsWith("javablogging.")) {
-            return getClass(name);
+        if (!name.startsWith("java")) {
+
+            String fullClassName =
+                    name.replace('.', File.separatorChar) + ".class";
+            try (InputStream stream = new FileInputStream(
+                    path + "/" + fullClassName)) {
+                byte[] buff = new byte[stream.available()];
+                DataInputStream in = new DataInputStream(stream);
+                in.readFully(buff);
+
+                Class c = defineClass(name, buff, 0, buff.length);
+                resolveClass(c);
+                return c;
+            } catch (NullPointerException | IOException e) {
+                throw new ClassNotFoundException();
+            }
         }
         return super.loadClass(name);
     }
-
-    /**
-     * Loads a given file (presumably .class) into a byte array.
-     * The file should be accessible as a resource, for example
-     * it could be located on the classpath.
-     *
-     * @param name File name to load
-     * @return Byte array read from the file
-     * @throws IOException Is thrown when there
-     *               was some problem reading the file
-     */
-    private byte[] loadClassData(String name) throws IOException {
-        // Opening the file
-        InputStream stream = getClass().getClassLoader()
-                .getResourceAsStream(name);
-        int size = stream.available();
-        byte buff[] = new byte[size];
-        DataInputStream in = new DataInputStream(stream);
-        // Reading the binary data
-        in.readFully(buff);
-        in.close();
-        return buff;
-    }
-
-    public static void main(String[] args) throws Exception {
-//        ClassLoaderImpl loader = new ClassLoaderImpl();
-//        Class<?> clazz =
-//                loader.loadClass("/home/NIX/asinkevich/java/IntegerPrinter");
-//        Object instance = clazz.newInstance();
-//        clazz.getMethod("runMe").invoke(instance);
-    }
-
 }
